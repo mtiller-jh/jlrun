@@ -1,26 +1,16 @@
 #!/usr/bin/env julia
 using Pkg
 
-# This script takes one or two arguments.  The first argument is 
-# the name of a package (currently assumes this exists in the 
-# default environment only but if you set JULIA_PROJECT, it might 
-# honor that).  If only one argument is provided, then this script
-# looks for a file called ./scripts/run.jl in that package's
-# directory structure and runs that **under the environment of
-# that package** (i.e., using its Project.toml file).  If a second
-# argument is provided, _e.g..,_ `foo`, then this script looks 
-# for a script by that name, _e.g.,_ `scripts/foo.jl`, instead of 
-# the default `scripts/run.jl`
-
 # Parse command line arguments
 if length(ARGS)==0
-    println("jlrun <package>[/<script>]")
+    println("jlrun <package>[/<script>] ...")
     exit(1)
 end
 
+# Split out the script, if present
 parts = split(ARGS[1], "/")
 if length(parts)>2
-    println("jlrun <package>[/<script>]")
+    println("jlrun <package>[/<script>] ...")
     exit(2)
 end
 
@@ -40,16 +30,12 @@ scriptfile = joinpath(dir, "scripts", "$(script).jl")
 # Point Julia to the environment associated with the package
 ENV["JULIA_PROJECT"] = dir
 
-newargs = ARGS[2:length(ARGS)]
-
 cmd::Vector{String} = []
-
 push!(cmd, joinpath(Sys.BINDIR, Base.julia_exename()))
 push!(cmd, "--project=$(dir)")
 push!(cmd, scriptfile)
-for a in newargs
+for a in ARGS[2:length(ARGS)]
     push!(cmd, a)
 end
 
-cmdstr = join(cmd, " ")
 run(pipeline(Cmd(cmd)))
