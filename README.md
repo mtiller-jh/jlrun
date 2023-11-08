@@ -1,13 +1,47 @@
 # Explanation
 
-This script takes one or two arguments.  The first argument is the name of a
-package (currently assumes this exists in the default environment only but if
-you set JULIA_PROJECT, it might honor that).  If only one argument is provided,
-then this script looks for a file called ./scripts/run.jl in that package's
-directory structure and runs that **under the environment of that package**
-(i.e., using its Project.toml file).  If a second argument is provided, _e.g..,_
-`foo`, then this script looks for a script by that name, _e.g.,_
-`scripts/foo.jl`, instead of the default `scripts/run.jl`.
+## Installation
 
-Note, this script only needs to be installed in your path.  It can be named
-whatever you want although `jlrun.jl` or just `jlrun` are what I tested it with.
+Typically this script is installed as either `jlrun.jl` or `jlrun`.  It should
+be given the executable permission and placed somewhere in your `PATH.`  Note,
+this script only needs to be installed in your path.  It can be named whatever
+you want although `jlrun.jl` or just `jlrun` are what I tested it with.
+## Usage
+
+The script usage is as follows:
+
+```
+$ jlrun <package>[/<script>] ...
+```
+
+...where `<package>` name is a Julia package installed in the current
+environment and `<script>` is an optional script name to run (by default, the
+`run` script is used if no script is specified).  The `...` represents any
+additional command line arguments which will be passed to the underlying script.
+
+## Function
+
+When invoked, `jlrun` find the location of the specified `<package>` in the
+current environment.  It then looks for a `scripts` directory in that package
+and expects to find a file named `<script>.jl` in that directory.  It then runs
+that scripts and appends the additional command line arguments (_e.g.,_ `...`).
+
+Note that the script itself is run **under the environment of that package**.
+This means it should have access to all dependencies specified by that package
+(and _only_ those dependencies).
+
+## Example
+
+```
+$ jlrun Runlit --size 10
+```
+
+This will run the `scripts/run.jl` script found in the `Runlit` package and
+using the command line arguments `--size 10`.
+
+```
+$ jlrun Runlit/alt
+```
+
+This will run the `scripts/alt.jl` script found in the `Runlit` package but
+without any command line arguments.
