@@ -13,14 +13,20 @@ using Pkg
 # the default `scripts/run.jl`
 
 # Parse command line arguments
-if length(ARGS)!=2 && length(ARGS)!=1
-    println("jlrun <package> [<script>]")
+if length(ARGS)==0
+    println("jlrun <package>[/<script>]")
     exit(1)
 end
 
+parts = split(ARGS[1], "/")
+if length(parts)>2
+    println("jlrun <package>[/<script>]")
+    exit(2)
+end
+
 # Extract values from arguments
-pkg = ARGS[1]
-script = length(ARGS)==2 ? ARGS[2] : "run"
+pkg = parts[1]
+script = length(parts)==2 ? parts[2] : "run"
 
 # Trigger package where script exists to be loaded
 eval(Meta.parse("using $(pkg)"))
@@ -32,8 +38,30 @@ dir = Pkg.pkgdir(m)
 scriptfile = joinpath(dir, "scripts", "$(script).jl")
 
 # Point Julia to the environment associated with the package
+println("Setting environment to: $(dir)")
 ENV["JULIA_PROJECT"] = dir
 
-# "Run" the script
-include(scriptfile)
+newargs = ARGS[2:length(ARGS)]
+
+cmd::Vector{String} = []
+
+push!(cmd, joinpath(Sys.BINDIR, Base.julia_exename()))
+push!(cmd, "--project=$(dir)")
+push!(cmd, scriptfile)
+for a in newargs
+    # push!(cmd, "\"$(a)\"")
+    push!(cmd, a)
+end
+
+cmdstr = join(cmd, " ")
+println("cmdstr = $(cmdstr)")
+run(pipeline(Cmd(cmd)))
+# empty!(ARGS)
+# for a in newargs
+#     push!(ARGS, a)
+# end
+
+# run(Cmd(`pwd`, dir="/"))
+# # "Run" the script
+# include(scriptfile)
 
