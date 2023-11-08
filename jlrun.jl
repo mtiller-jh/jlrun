@@ -38,7 +38,6 @@ dir = Pkg.pkgdir(m)
 scriptfile = joinpath(dir, "scripts", "$(script).jl")
 
 # Point Julia to the environment associated with the package
-println("Setting environment to: $(dir)")
 ENV["JULIA_PROJECT"] = dir
 
 newargs = ARGS[2:length(ARGS)]
@@ -49,19 +48,8 @@ push!(cmd, joinpath(Sys.BINDIR, Base.julia_exename()))
 push!(cmd, "--project=$(dir)")
 push!(cmd, scriptfile)
 for a in newargs
-    # push!(cmd, "\"$(a)\"")
     push!(cmd, a)
 end
 
 cmdstr = join(cmd, " ")
-println("cmdstr = $(cmdstr)")
 run(pipeline(Cmd(cmd)))
-# empty!(ARGS)
-# for a in newargs
-#     push!(ARGS, a)
-# end
-
-# run(Cmd(`pwd`, dir="/"))
-# # "Run" the script
-# include(scriptfile)
-
