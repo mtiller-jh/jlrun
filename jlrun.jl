@@ -34,4 +34,6 @@ dir = joinpath(dirname(loc), "..")
 # Identify the actual file to run
 scriptfile = joinpath(dir, "scripts", "$(script).jl")
 
-run(Cmd([joinpath(Sys.BINDIR, Base.julia_exename()), "--project=$(dir)", scriptfile, ARGS[2:end]...]))
+cmd = [joinpath(Sys.BINDIR, Base.julia_exename()), "--project=$(dir)", scriptfile, ARGS[2:end]...]
+println("Command: $(join(cmd, " "))")
+run(Cmd(cmd))
