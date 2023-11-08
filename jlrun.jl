@@ -2,21 +2,21 @@
 using Pkg
 
 # Parse command line arguments
-if length(ARGS)==0
+if length(ARGS) == 0
     println("jlrun <package>[/<script>] ...")
     exit(1)
 end
 
 # Split out the script, if present
 parts = split(ARGS[1], "/")
-if length(parts)>2
+if length(parts) > 2
     println("jlrun <package>[/<script>] ...")
     exit(2)
 end
 
 # Extract values from arguments
 pkg = parts[1]
-script = length(parts)==2 ? parts[2] : "run"
+script = get(parts, 2, "run")
 
 # Trigger package where script exists to be loaded
 eval(Meta.parse("using $(pkg)"))
@@ -38,4 +38,4 @@ for a in ARGS[2:length(ARGS)]
     push!(cmd, a)
 end
 
-run(pipeline(Cmd(cmd)))
+run(Cmd(cmd))
