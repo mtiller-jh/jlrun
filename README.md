@@ -1,14 +1,35 @@
 # Explanation
 
+In other language eco-systems like Go or Node, the package management tools also
+provide a means for installing and running a program (and not just downloading a
+dependecy).  I couldn't really find something like that for the Julia world so I
+wrote this script.
+
+The basic idea is simple.  If you want to run script `foo` inside package `Bar`,
+you would invoke that with:
+
+```shell
+$ jlrun Bar/foo <arguments passed to **foo**>
+```
+
+This will look for a file called `./scripts/foo.jl` in the `Bar` package.  If
+you leave the script name off, the default script name is `run` (_e.g.,_ `./scripts/run.jl`).
+
+NB: There is a larger effort, associated with the `julia` executable itself, to
+enable very similar functionality as described [in this pull
+rquest](https://github.com/JuliaLang/julia/pull/52103).  If this were to be
+merged, much of this would be unnecessary.
+
 ## Installation
 
 Typically this script is installed as either `jlrun.jl` or `jlrun`.  It should
 be given the executable permission and placed somewhere in your `PATH.`  Note,
 this script only needs to be installed in your path.  It can be named whatever
 you want although `jlrun.jl` or just `jlrun` are what I tested it with.
+
 ## Usage
 
-The script usage is as follows:
+As mentioned previous, the script usage is as follows:
 
 ```
 $ jlrun <package>[/<script>] ...
@@ -36,7 +57,7 @@ This means it should have access to all dependencies specified by that package
 $ jlrun Runlit --size 10
 ```
 
-This will run the `scripts/run.jl` script found in the `Runlit` package and
+This will run the `./scripts/run.jl` script found in the `Runlit` package and
 using the command line arguments `--size 10`.
 
 ```
