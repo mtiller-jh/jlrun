@@ -15,7 +15,7 @@ $ jlrun Bar/foo <arguments passed to **foo**>
 This will look for a file called `./scripts/foo.jl` in the `Bar` package.  If
 you leave the script name off, the default script name is `run` (_e.g.,_ `./scripts/run.jl`).
 
-NB: There is a larger effort, associated with the `julia` executable itself, to
+**NB**: There is a larger effort, associated with the `julia` executable itself, to
 enable very similar functionality as described [in this pull
 rquest](https://github.com/JuliaLang/julia/pull/52103).  If this were to be
 merged, much of this would be unnecessary.
@@ -66,3 +66,7 @@ $ jlrun Runlit/alt
 
 This will run the `scripts/alt.jl` script found in the `Runlit` package but
 without any command line arguments.
+
+**NB**: The [`Runlit` package](https://github.com/mtiller-jh/Runlit), which
+provides a CLI based way of running [Literate.jl](https://github.com/fredrikekre/Literate.jl), is designed
+to work with `jlrun`.
